@@ -1,0 +1,22 @@
+# Runs test linting on pull requests to main
+
+name: PRWorkflow
+
+on:
+  pull_request:
+      branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+
+  build_and_test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout repo
+      uses: actions/checkout@v4.1.1
+  
+    - name: build and test with gradle
+      run: |
+        ./gradlew build
+    
+
