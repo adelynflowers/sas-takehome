@@ -16,12 +16,12 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform() {
-        excludeTags("integrationtest");
+        excludeTags("integrationtest")
     }
 }
 
 val integration = tasks.register<Test>("slowTests") {
     useJUnitPlatform {
-        includeTags("integrationtest");
+        includeTags("integrationtest")
     }
 }
