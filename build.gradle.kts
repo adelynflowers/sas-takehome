@@ -1,27 +1,32 @@
 plugins {
-    id("java")
+	java
+	id("org.springframework.boot") version "3.2.0"
+	id("io.spring.dependency-management") version "1.1.4"
 }
 
 group = "adelynflowers.github.io"
-version = "1.0"
+version = "0.0.1-SNAPSHOT"
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_17
+}
 
 repositories {
-    mavenCentral()
+	mavenCentral()
 }
 
 dependencies {
-    testImplementation(platform("org.junit:junit-bom:5.9.1"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
+	implementation("org.springframework.boot:spring-boot-starter-web")
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
-tasks.test {
-    useJUnitPlatform() {
-        excludeTags("integrationtest")
-    }
+tasks.withType<Test> {
+	useJUnitPlatform()
 }
 
-val integration = tasks.register<Test>("slowTests") {
-    useJUnitPlatform {
-        includeTags("integrationtest")
-    }
+tasks.register<Test>("integrationTest") {
+	group = "verification"
+	useJUnitPlatform() {
+		includeTags("integration")
+	}
 }
