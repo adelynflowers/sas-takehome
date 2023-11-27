@@ -18,6 +18,6 @@ jobs:
   
     - name: build and test with gradle
       run: |
-        gradle build
+        gradle build --no-daemon
     
 
