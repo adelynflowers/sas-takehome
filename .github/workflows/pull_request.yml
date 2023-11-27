@@ -11,12 +11,13 @@ jobs:
 
   build_and_test:
     runs-on: ubuntu-latest
+    container: gradle:8.4-jdk17
     steps:
     - name: checkout repo
       uses: actions/checkout@v4.1.1
   
     - name: build and test with gradle
       run: |
-        ./gradlew build
+        gradle build
     
 
