@@ -20,13 +20,18 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
+tasks.jar {
+	enabled = false;
+}
+
 tasks.withType<Test> {
-	useJUnitPlatform()
+	useJUnitPlatform() {
+		excludeTags("integration")
+	}
 }
 
 tasks.register<Test>("integrationTest") {
-	group = "verification"
 	useJUnitPlatform() {
-		includeTags("integration")
+		this.excludeTags.remove("integration")
 	}
 }
