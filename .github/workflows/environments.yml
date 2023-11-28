@@ -1,0 +1,45 @@
+name: EnvironmentDeploymentWorkflow
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  test:
+    environment: test
+    runs-on: ubuntu-latest
+    container: gradle:8.4-jdk17
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v4.1.1
+
+      - name: build and unit test with gradle
+        run: gradle build --no-daemon
+
+      - name: run integration tests
+        run: gradle integrationTest --no-daemon
+
+      - name: upload jar
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-jar
+          path: build/libs/*.jar
+  qa:
+    runs-on: ubuntu-latest
+    environment: qa
+    steps:
+
+      - name: download jar artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: app-jar
+          path: build/libs/app.jar
+
+      - name: build docker image
+        run: |
+          chmod +x ./build.sh
+          ./build.sh
+
+      - name: wip upload to azure
+        run: echo "uploaded to azure"
+
