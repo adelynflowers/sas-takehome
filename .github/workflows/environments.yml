@@ -29,6 +29,9 @@ jobs:
     environment: qa
     steps:
 
+      - name: checkout repo
+        uses: actions/checkout@v4.1.1
+
       - name: download jar artifact
         uses: actions/download-artifact@v3
         with:
