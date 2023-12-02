@@ -27,6 +27,10 @@ jobs:
         run: |
           echo adelynflowersUsername=$AZURE_ARTIFACTS_USERNAME >> /home/gradle/.gradle/gradle.properties;
           echo adelynflowersPassword=$AZURE_ARTIFACTS_PASSWORD >> /home/gradle/.gradle/gradle.properties
+
+      - name: check fake azure credentials
+        run: cat /home/grade/.gradle/gradle.properties
+
       - name: checkout repo
         uses: actions/checkout@v4.1.1
 
