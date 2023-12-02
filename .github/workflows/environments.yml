@@ -25,14 +25,29 @@ jobs:
           echo adelynflowersPassword=$AZURE_ARTIFACTS_PASSWORD >> ~/.gradle/gradle.properties
           gradle publish
 
+      - name: build docker image
+        run: gradle bootBuildImage
+
+      - name: authenticate with azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: upload docker image to container registry
+        uses: azure/CLI@v1
+        with:
+          azcliversion: latest
+          inlineScript: |
+            az acr login --name adelynflowers
+            docker push $(gradle -q printName):$(gradle -q printVersion)      
+
   qa:
     runs-on: ubuntu-latest
     environment: qa
     needs: test
     steps:
-
-      - name: checkout repo
-        uses: actions/checkout@v4.1.1
 
       - name: wip upload to azure
         run: echo "uploaded to azure"
