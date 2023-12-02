@@ -13,6 +13,11 @@ jobs:
     runs-on: ubuntu-latest
     container: gradle:8.4-jdk17
     steps:
+    - name: add azure artifacts credentials to gradle properties
+      run: |
+        echo adelynflowersUsername=$AZURE_ARTIFACTS_USERNAME >> /home/gradle/.gradle/gradle.properties
+        echo adelynflowersPassword=$AZURE_ARTIFACTS_PASSWORD >> /home/gradle/.gradle/gradle.properties
+
     - name: checkout repo
       uses: actions/checkout@v4.1.1
   
