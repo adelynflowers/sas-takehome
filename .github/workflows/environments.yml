@@ -11,11 +11,7 @@ permissions:
 jobs:
   test-and-upload:
     runs-on: ubuntu-latest
-    container: gradle:8.4-jdk17
     steps:
-      - name: install azure cli
-        run: curl -sL https://aka.ms/InstallAzureCLIDeb | bash
-
       - name: authenticate with azure
         uses: azure/login@v1
         with:
@@ -28,20 +24,26 @@ jobs:
           AZURE_ARTIFACTS_USERNAME: ${{ secrets.AZURE_ARTIFACTS_USERNAME }}
           AZURE_ARTIFACTS_PASSWORD: ${{ secrets.AZURE_ARTIFACTS_PASSWORD }}
         run: |
-          echo adelynflowersUsername=$AZURE_ARTIFACTS_USERNAME >> /home/gradle/.gradle/gradle.properties;
-          echo adelynflowersPassword=$AZURE_ARTIFACTS_PASSWORD >> /home/gradle/.gradle/gradle.properties
+          echo adelynflowersUsername=$AZURE_ARTIFACTS_USERNAME >> ~/.gradle/gradle.properties;
+          echo adelynflowersPassword=$AZURE_ARTIFACTS_PASSWORD >> ~/.gradle/gradle.properties
 
       - name: checkout repo
         uses: actions/checkout@v4.1.1
 
+      - name: setup java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin' # See 'Supported distributions' for available options
+          java-version: '17'
+
       - name: build and unit test with gradle
-        run: gradle build --no-daemon
+        run: ./gradlew build --no-daemon
 
       - name: run integration tests
-        run: gradle integrationTest --no-daemon
+        run: ./gradlew integrationTest --no-daemon
 
       - name: upload jar to azure artifacts
-        run: gradle publish
+        run: ./gradlew publish
 
       - name: build docker image
         run: gradle bootBuildImage
