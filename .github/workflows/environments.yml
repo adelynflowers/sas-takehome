@@ -69,7 +69,6 @@ jobs:
 
   qa:
     runs-on: ubuntu-latest
-    environment: qa
     needs: test-and-upload
     steps:
 
