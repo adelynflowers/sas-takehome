@@ -10,6 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     container: gradle:8.4-jdk17
     steps:
+      - name: authenticate with azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       - name: add azure artifacts credentials to gradle properties
         run: |
           echo adelynflowersUsername=$AZURE_ARTIFACTS_USERNAME >> /home/gradle/.gradle/gradle.properties
@@ -28,13 +34,6 @@ jobs:
 
       - name: build docker image
         run: gradle bootBuildImage
-
-      - name: authenticate with azure
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: upload docker image to container registry
         uses: azure/CLI@v1
