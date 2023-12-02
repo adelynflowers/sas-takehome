@@ -87,6 +87,8 @@ jobs:
         with:
           name: image_id
           path: image_id
+      - name: checkout repo
+        uses: actions/checkout@v4.1.1
 
       - name: deploy instance and save ip
         run: |
