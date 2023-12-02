@@ -93,6 +93,7 @@ jobs:
       - name: deploy instance and save ip
         run: |
           cd terraform;
+          terraform init;
           terraform plan -out "main.tfplan";
           terraform apply "main.tfplan" -var 'image="$(cat image_id)"'
 
