@@ -10,6 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     container: gradle:8.4-jdk17
     steps:
+      - name: add azure artifacts credentials to gradle properties
+        run: |
+          echo adelynflowersUsername=$AZURE_ARTIFACTS_USERNAME >> ~/.gradle/gradle.properties
+          echo adelynflowersPassword=$AZURE_ARTIFACTS_PASSWORD >> ~/.gradle/gradle.properties
       - name: checkout repo
         uses: actions/checkout@v4.1.1
 
@@ -20,10 +24,7 @@ jobs:
         run: gradle integrationTest --no-daemon
 
       - name: upload jar to azure artifacts
-        run: |
-          echo adelynflowersUsername=$AZURE_ARTIFACTS_USERNAME >> ~/.gradle/gradle.properties
-          echo adelynflowersPassword=$AZURE_ARTIFACTS_PASSWORD >> ~/.gradle/gradle.properties
-          gradle publish
+        run: gradle publish
 
       - name: build docker image
         run: gradle bootBuildImage
