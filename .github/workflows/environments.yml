@@ -50,7 +50,7 @@ jobs:
   qa:
     runs-on: ubuntu-latest
     environment: qa
-    needs: test
+    needs: test-and-upload
     steps:
 
       - name: wip upload to azure
