@@ -19,11 +19,12 @@ jobs:
       - name: run integration tests
         run: gradle integrationTest --no-daemon
 
-      - name: upload jar
-        uses: actions/upload-artifact@v3
-        with:
-          name: app-jar
-          path: build/libs/*.jar
+      - name: upload jar to azure artifacts
+        run: |
+          echo adelynflowersUsername=$AZURE_ARTIFACTS_USERNAME >> ~/.gradle/gradle.properties
+          echo adelynflowersPassword=$AZURE_ARTIFACTS_PASSWORD >> ~/.gradle/gradle.properties
+          gradle publish
+
   qa:
     runs-on: ubuntu-latest
     environment: qa
@@ -32,17 +33,6 @@ jobs:
 
       - name: checkout repo
         uses: actions/checkout@v4.1.1
-
-      - name: download jar artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: app-jar
-          path: build/libs/app.jar
-
-      - name: build docker image
-        run: |
-          chmod +x ./build.sh
-          ./build.sh
 
       - name: wip upload to azure
         run: echo "uploaded to azure"
