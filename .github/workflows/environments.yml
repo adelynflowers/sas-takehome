@@ -4,21 +4,29 @@ on:
   push:
     branches: ["main"]
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   test:
     environment: test
     runs-on: ubuntu-latest
     container: gradle:8.4-jdk17
     steps:
+      - name: install azure cli
+        run: curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
       - name: authenticate with azure
         uses: azure/login@v1
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
       - name: add azure artifacts credentials to gradle properties
         run: |
-          echo adelynflowersUsername=$AZURE_ARTIFACTS_USERNAME >> /home/gradle/.gradle/gradle.properties
+          echo adelynflowersUsername=$AZURE_ARTIFACTS_USERNAME >> /home/gradle/.gradle/gradle.properties;
           echo adelynflowersPassword=$AZURE_ARTIFACTS_PASSWORD >> /home/gradle/.gradle/gradle.properties
       - name: checkout repo
         uses: actions/checkout@v4.1.1
@@ -36,11 +44,8 @@ jobs:
         run: gradle bootBuildImage
 
       - name: upload docker image to container registry
-        uses: azure/CLI@v1
-        with:
-          azcliversion: latest
-          inlineScript: |
-            az acr login --name adelynflowers
+        run: |
+            az acr login --name adelynflowers;
             docker push $(gradle -q printName):$(gradle -q printVersion)      
 
   qa:
