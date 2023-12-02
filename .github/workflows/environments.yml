@@ -58,7 +58,14 @@ jobs:
         run: |
             az acr login --name adelynflowers;
             docker tag $(gradle -q printName):$(gradle -q printVersion) adelynflowers.azurecr.io/$(gradle -q printName):$(gradle -q printVersion);
-            docker push adelynflowers.azurecr.io/$(gradle -q printName):$(gradle -q printVersion)      
+            docker push adelynflowers.azurecr.io/$(gradle -q printName):$(gradle -q printVersion);
+            echo adelynflowers.azurecr.io/$(gradle -q printName):$(gradle -q printVersion) > image_id
+
+      - name: upload image name as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: image_id
+          path: image_id
 
   qa:
     runs-on: ubuntu-latest
@@ -66,6 +73,42 @@ jobs:
     needs: test-and-upload
     steps:
 
-      - name: wip upload to azure
-        run: echo "uploaded to azure"
+      - name: authenticate with azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: setup terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: download image_id artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: image_id
+          path: image_id
+
+      - name: deploy instance and save ip
+        run: |
+          cd terraform;
+          terraform plan -out "main.tfplan";
+          terraform apply "main.tfplan" -var 'image="$(cat image_id)"'
+
+      - name: curl instance
+        run: |
+          cd terraform;
+          echo "$(terraform output -raw container_ipv4_address):8080/" > instance_ip;
+          curl $(cat instance_ip);
+
+      - name: shutdown resources
+        run: |
+          cd terraform;
+          terraform plan -destroy -out main.destroy.tfplan;
+          terraform apply "main.destroy.tfplan"
+          
+          
+          
+      
+          
 
