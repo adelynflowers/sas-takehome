@@ -24,6 +24,7 @@ jobs:
           AZURE_ARTIFACTS_USERNAME: ${{ secrets.AZURE_ARTIFACTS_USERNAME }}
           AZURE_ARTIFACTS_PASSWORD: ${{ secrets.AZURE_ARTIFACTS_PASSWORD }}
         run: |
+          mkdir ~/.gradle;
           echo adelynflowersUsername=$AZURE_ARTIFACTS_USERNAME >> ~/.gradle/gradle.properties;
           echo adelynflowersPassword=$AZURE_ARTIFACTS_PASSWORD >> ~/.gradle/gradle.properties
 
