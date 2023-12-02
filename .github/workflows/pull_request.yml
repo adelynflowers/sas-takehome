@@ -15,6 +15,7 @@ jobs:
     steps:
     - name: add azure artifacts credentials to gradle properties
       run: |
+        mkdir ~/.gradle
         echo adelynflowersUsername=$AZURE_ARTIFACTS_USERNAME >> ~/.gradle/gradle.properties
         echo adelynflowersPassword=$AZURE_ARTIFACTS_PASSWORD >> ~/.gradle/gradle.properties
 
