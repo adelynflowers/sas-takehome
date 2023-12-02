@@ -65,3 +65,15 @@ tasks.register<Test>("integrationTest") {
 		this.excludeTags.remove("integration")
 	}
 }
+
+tasks.register("printVersion") {
+	doLast {
+		println(project.version)
+	}
+}
+
+tasks.register("printName") {
+	doLast {
+		println(project.name)
+	}
+}
