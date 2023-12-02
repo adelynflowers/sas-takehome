@@ -24,12 +24,12 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: add azure artifacts credentials to gradle properties
+        env:
+          AZURE_ARTIFACTS_USERNAME: ${{ secrets.AZURE_ARTIFACTS_USERNAME }}
+          AZURE_ARTIFACTS_PASSWORD: ${{ secrets.AZURE_ARTIFACTS_PASSWORD }}
         run: |
           echo adelynflowersUsername=$AZURE_ARTIFACTS_USERNAME >> /home/gradle/.gradle/gradle.properties;
           echo adelynflowersPassword=$AZURE_ARTIFACTS_PASSWORD >> /home/gradle/.gradle/gradle.properties
-
-      - name: check fake azure credentials
-        run: cat /home/gradle/.gradle/gradle.properties
 
       - name: checkout repo
         uses: actions/checkout@v4.1.1
