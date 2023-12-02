@@ -23,7 +23,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: app-jar
-          path: build/libs/*.jar
+          path: build/libs/sastakehome-0.0.1-SNAPSHOT.jar
   qa:
     runs-on: ubuntu-latest
     environment: qa
@@ -36,7 +36,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: app-jar
-          path: build/libs/app.jar
+          path: build/libs/sastakehome-0.0.1-SNAPSHOT.jar
 
       - name: build docker image
         run: |
