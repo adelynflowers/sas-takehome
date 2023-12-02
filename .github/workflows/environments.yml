@@ -57,7 +57,8 @@ jobs:
       - name: upload docker image to container registry
         run: |
             az acr login --name adelynflowers;
-            docker push $(gradle -q printName):$(gradle -q printVersion)      
+            docker tag $(gradle -q printName):$(gradle -q printVersion) adelynflowers.azurecr.io/$(gradle -q printName):$(gradle -q printVersion);
+            docker push adelynflowers.azurecr.io/$(gradle -q printName):$(gradle -q printVersion)      
 
   qa:
     runs-on: ubuntu-latest
