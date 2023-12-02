@@ -41,3 +41,10 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+### Terraform ###
+terraform/.terraform
+*.tfplan
+*.tfstate
+terraform.tfstate
+terraform.tfstate.backup
