@@ -15,7 +15,7 @@ jobs:
     container: gradle:8.4-jdk17
     steps:
       - name: install azure cli
-        run: curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+        run: curl -sL https://aka.ms/InstallAzureCLIDeb | bash
 
       - name: authenticate with azure
         uses: azure/login@v1
