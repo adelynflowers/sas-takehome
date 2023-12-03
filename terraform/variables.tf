@@ -1,6 +1,6 @@
 variable "resource_group_location" {
   type        = string
-  default     = "centralus"
+  default     = "eastus"
   description = "Location for all resources."
 }
 
@@ -16,20 +16,14 @@ variable "resource_group_name" {
   description = "Name of the resource group to use"
 }
 
-variable "container_group_name_prefix" {
-  type        = string
-  description = "Prefix of the container group name that's combined with a random value so name is unique in your Azure subscription."
-  default     = "takehomegroup"
-}
-
-variable "container_name_prefix" {
-  type        = string
-  description = "Prefix of the container name that's combined with a random value so name is unique in your Azure subscription."
-  default     = "takehome"
+variable "resource_prefix" {
+  type = string
+  description = "Prefix used for ephemeral resources."
 }
 
 variable "image" {
   type        = string
+  default = "adelynflowers.azurecr.io/sastakehome:0.0.1-SNAPSHOT"
   description = "Container image to deploy. Should be of the form repoName/imagename:tag for images stored in public Docker Hub, or a fully qualified URI for other registries. Images from private registries require additional registry credentials."
 }
 
@@ -42,13 +36,13 @@ variable "port" {
 variable "cpu_cores" {
   type        = number
   description = "The number of CPU cores to allocate to the container."
-  default     = 0.25
+  default     = 0.5
 }
 
 variable "memory_in_gb" {
-  type        = number
+  type        = string
   description = "The amount of memory to allocate to the container in gigabytes."
-  default     = 1
+  default     = "1Gi"
 }
 
 variable "restart_policy" {
@@ -65,4 +59,14 @@ variable "user_assigned_identity_name" {
   type = string
   default = "githubactions-user"
   description = "User assigned identity used to authorize with ACR"
+}
+
+variable "log_analytics_name" {
+  type = string
+  default = "sastakehome-law"
+}
+
+variable "container_apps_env_name" {
+  type = string
+  default = "sastakehome-env"
 }
