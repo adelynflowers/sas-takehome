@@ -66,7 +66,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: image_id
-          path: ./image_id.txt
+          path: image_id.txt
 
   qa:
     runs-on: ubuntu-latest
@@ -90,14 +90,13 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: image_id
-          path: terraform/image_id.txt
-
+          path: terraform
 
       - name: deploy instance and save ip
         run: |
-          ls -a;
+          ls -a -R;
           cd terraform;
-          ls -a;
+          ls -a -R;
           cat image_id.txt
           terraform init;
           terraform plan -var "image=$(cat image_id.txt)" -out "main.tfplan";
