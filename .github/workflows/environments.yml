@@ -52,14 +52,15 @@ jobs:
         run: ./gradlew publish
 
       - name: build docker image
-        run: gradle bootBuildImage
+        run: ./gradlew bootBuildImage
 
       - name: upload docker image to container registry
         run: |
             az acr login --name adelynflowers;
-            docker tag $(gradle -q printName):$(gradle -q printVersion) adelynflowers.azurecr.io/$(gradle -q printName):$(gradle -q printVersion);
-            docker push adelynflowers.azurecr.io/$(gradle -q printName):$(gradle -q printVersion);
-            echo adelynflowers.azurecr.io/$(gradle -q printName):$(gradle -q printVersion) > image_id.txt
+            docker tag $(./gradlew -q printName):$(./gradlew -q printVersion) adelynflowers.azurecr.io/$(./gradlew -q printName):$(./gradlew -q printVersion);
+            docker push adelynflowers.azurecr.io/$(./gradlew -q printName):$(./gradlew -q printVersion);
+            echo adelynflowers.azurecr.io/$(./gradlew -q printName):$(./gradlew -q printVersion) > image_id.txt
+            cat image_id.txt
 
       - name: upload image name as artifact
         uses: actions/upload-artifact@v3
@@ -97,6 +98,7 @@ jobs:
           ls -a;
           cd terraform;
           ls -a;
+          cat image_id.txt
           terraform init;
           terraform plan -var "image=$(cat image_id.txt)" -out "main.tfplan";
           terraform apply "main.tfplan"
