@@ -60,8 +60,10 @@ jobs:
             az acr login --name adelynflowers;
             docker tag $(./gradlew -q printName):$(./gradlew -q printVersion) adelynflowers.azurecr.io/$(./gradlew -q printName):$(./gradlew -q printVersion);
             docker push adelynflowers.azurecr.io/$(./gradlew -q printName):$(./gradlew -q printVersion);
-            echo adelynflowers.azurecr.io/$(./gradlew -q printName):$(./gradlew -q printVersion) > image_id.txt
-            cat image_id.txt
+            echo adelynflowers.azurecr.io/$(./gradlew -q printName):$(./gradlew -q printVersion) > image_id.txt;
+            cat image_id.txt;
+            cp image_id.txt terraform/image_id.txt
+            
 
       - name: upload image name as artifact
         uses: actions/upload-artifact@v3
