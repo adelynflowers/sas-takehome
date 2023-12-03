@@ -59,13 +59,13 @@ jobs:
             az acr login --name adelynflowers;
             docker tag $(gradle -q printName):$(gradle -q printVersion) adelynflowers.azurecr.io/$(gradle -q printName):$(gradle -q printVersion);
             docker push adelynflowers.azurecr.io/$(gradle -q printName):$(gradle -q printVersion);
-            echo adelynflowers.azurecr.io/$(gradle -q printName):$(gradle -q printVersion) > image_id
+            echo adelynflowers.azurecr.io/$(gradle -q printName):$(gradle -q printVersion) > image_id.txt
 
       - name: upload image name as artifact
         uses: actions/upload-artifact@v3
         with:
           name: image_id
-          path: image_id
+          path: ./image_id.txt
 
   qa:
     runs-on: ubuntu-latest
@@ -89,14 +89,16 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: image_id
-          path: terraform/image_id
+          path: terraform/image_id.txt
 
 
       - name: deploy instance and save ip
         run: |
+          ls -a;
           cd terraform;
+          ls -a;
           terraform init;
-          terraform plan -var "image=$(cat image_id)" -out "main.tfplan";
+          terraform plan -var "image=$(cat image_id.txt)" -out "main.tfplan";
           terraform apply "main.tfplan"
 
       - name: curl instance
@@ -108,7 +110,7 @@ jobs:
       - name: shutdown resources
         run: |
           cd terraform;
-          terraform plan -var "image=$(cat image_id)" -destroy -out main.destroy.tfplan;
+          terraform plan -var "image=$(cat image_id.txt)" -destroy -out main.destroy.tfplan;
           terraform apply "main.destroy.tfplan"
           
           
