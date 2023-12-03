@@ -94,7 +94,7 @@ jobs:
         run: |
           cd terraform;
           terraform init;
-          terraform plan -var "image=$(cat image_id)" -out "main.tfplan";
+          terraform plan -var "image=$(cat ../image_id)" -out "main.tfplan";
           terraform apply "main.tfplan"
 
       - name: curl instance
@@ -106,7 +106,7 @@ jobs:
       - name: shutdown resources
         run: |
           cd terraform;
-          terraform plan -var "image=$(cat image_id)" -destroy -out main.destroy.tfplan;
+          terraform plan -var "image=$(cat ../image_id)" -destroy -out main.destroy.tfplan;
           terraform apply "main.destroy.tfplan"
           
           
