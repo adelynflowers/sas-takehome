@@ -68,6 +68,26 @@ jobs:
           name: image_id
           path: image_id.txt
 
+      - name: deploy instance and save ip
+        run: |
+          cd terraform;
+          terraform init;
+          echo image=\"$(cat image_id.txt)\" >> dev.tfvars
+          echo resource_prefix=\"dev-$(echo $GITHUB_SHA | head -c 7)\" >> dev.tfvars
+          terraform plan -var-file dev.tfvars -out "main.tfplan";
+          terraform apply "main.tfplan"
+
+      - name: pseudo e2e test
+        run: |
+          cd terraform;
+          curl $(echo https://$(terraform output -raw latest_fqdn)/);
+
+      - name: shutdown resources
+        run: |
+          cd terraform;
+          terraform plan -var-file dev.tfvars -destroy -out main.destroy.tfplan;
+          terraform apply "main.destroy.tfplan"
+
   qa:
     runs-on: ubuntu-latest
     needs: test-and-upload
@@ -94,24 +114,22 @@ jobs:
 
       - name: deploy instance and save ip
         run: |
-          ls -a -R;
           cd terraform;
-          ls -a -R;
-          cat image_id.txt
           terraform init;
-          terraform plan -var "image=$(cat image_id.txt)" -out "main.tfplan";
+          echo image=\"$(cat image_id.txt)\" >> qa.tfvars
+          echo resource_prefix=\"qa-$(echo $GITHUB_SHA | head -c 7)\" >> qa.tfvars
+          terraform plan -var-file qa.tfvars -out "main.tfplan";
           terraform apply "main.tfplan"
 
       - name: curl instance
         run: |
           cd terraform;
-          echo "$(terraform output -raw container_ipv4_address):8080/" > instance_ip;
-          curl $(cat instance_ip);
+          curl $(echo https://$(terraform output -raw latest_fqdn)/);
 
       - name: shutdown resources
         run: |
           cd terraform;
-          terraform plan -var "image=$(cat image_id.txt)" -destroy -out main.destroy.tfplan;
+          terraform plan -var-file qa.tfvars -destroy -out main.destroy.tfplan;
           terraform apply "main.destroy.tfplan"
           
           
