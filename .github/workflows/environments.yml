@@ -82,19 +82,21 @@ jobs:
       - name: setup terraform
         uses: hashicorp/setup-terraform@v3
 
+      - name: checkout repo
+        uses: actions/checkout@v4.1.1
+
       - name: download image_id artifact
         uses: actions/download-artifact@v3
         with:
           name: image_id
-          path: image_id
-      - name: checkout repo
-        uses: actions/checkout@v4.1.1
+          path: terraform/image_id
+
 
       - name: deploy instance and save ip
         run: |
           cd terraform;
           terraform init;
-          terraform plan -var "image=$(cat ../image_id)" -out "main.tfplan";
+          terraform plan -var "image=$(cat image_id)" -out "main.tfplan";
           terraform apply "main.tfplan"
 
       - name: curl instance
@@ -106,7 +108,7 @@ jobs:
       - name: shutdown resources
         run: |
           cd terraform;
-          terraform plan -var "image=$(cat ../image_id)" -destroy -out main.destroy.tfplan;
+          terraform plan -var "image=$(cat image_id)" -destroy -out main.destroy.tfplan;
           terraform apply "main.destroy.tfplan"
           
           
