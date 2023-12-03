@@ -1,3 +1,3 @@
-output "container_ipv4_address" {
-  value = azurerm_container_group.container.ip_address
+output "latest_fqdn" {
+  value = azurerm_container_app.example.latest_revision_fqdn
 }
