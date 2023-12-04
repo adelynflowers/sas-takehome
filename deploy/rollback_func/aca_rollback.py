@@ -13,7 +13,7 @@ def rollback_container_app(resource_group_name, container_app_name):
     logger.info("Authenticated!")
     # Get desired revisions
 
-    sub_id = "7e63d45c-9aa0-4a0c-a212-281bb2691e5b"
+    sub_id = os.getenv("SUBSCRIPTION ID")
     logger.info("Getting revisions...")
     client: ContainerAppsAPIClient = ContainerAppsAPIClient(credential=DefaultAzureCredential(), subscription_id=sub_id)
     revisions_client: ContainerAppsRevisionsOperations  = client.container_apps_revisions
