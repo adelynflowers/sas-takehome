@@ -151,7 +151,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: qa_terraform
-          path: ~/qa_terraform
+          path: ~/qa-terraform
 
       - name: destroy QA container
         run: |
