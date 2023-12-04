@@ -155,7 +155,7 @@ jobs:
 
       - name: destroy QA container
         run: |
-          cd ~/qa_terraform;
+          cd ~/qa-terraform;
           ls -R;
           cd terraform;
           terraform plan -destroy -var-file qa.tfvars -out destroy.tfplan;
