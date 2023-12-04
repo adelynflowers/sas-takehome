@@ -1,4 +1,3 @@
-import org.gradle.internal.impldep.org.jsoup.safety.Safelist.basic
 import org.gradle.api.publish.PublishingExtension
 plugins {
 	java
@@ -10,7 +9,7 @@ plugins {
 }
 
 group = "adelynflowers.github.io"
-version = "0.0.2"
+version = "0.0.3"
 
 java {
 	sourceCompatibility = JavaVersion.VERSION_17
@@ -51,7 +50,7 @@ dependencies {
 }
 
 tasks.jar {
-	enabled = false;
+	enabled = false
 }
 
 tasks.withType<Test> {
