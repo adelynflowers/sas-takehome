@@ -150,11 +150,13 @@ jobs:
       - name: download terraform folder
         uses: actions/download-artifact@v3
         with:
-          name: qa-terraform
-          path: .
+          name: qa_terraform
+          path: ~/qa_terraform
 
       - name: destroy QA container
         run: |
+          cd ~/qa_terraform;
+          ls -R;
           cd terraform;
           terraform plan -destroy -var-file qa.tfvars -out destroy.tfplan;
           terraform apply destroy.tfplan;
