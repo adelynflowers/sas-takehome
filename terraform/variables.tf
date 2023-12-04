@@ -70,3 +70,13 @@ variable "container_apps_env_name" {
   type = string
   default = "sastakehome-env"
 }
+
+variable "revision_label" {
+  type= string
+  default = "default"
+}
+
+variable "app_name" {
+  type = string
+  default = "sastakehome"
+}
