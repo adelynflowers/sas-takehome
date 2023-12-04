@@ -150,7 +150,7 @@ jobs:
       - name: download terraform folder
         uses: actions/download-artifact@v3
         with:
-          name: qa_terraform
+          name: qa-terraform
           path: .
 
       - name: destroy QA container
