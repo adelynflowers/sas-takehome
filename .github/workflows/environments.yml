@@ -157,7 +157,6 @@ jobs:
         run: |
           cd ~/qa-terraform;
           ls -R;
-          cd terraform;
           terraform plan -destroy -var-file qa.tfvars -out destroy.tfplan;
           terraform apply destroy.tfplan;
 
@@ -180,14 +179,14 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: image_id
-          path: .
+          path: ~/image_id
 
       - name: Deploy image
         env:
           APP_NAME: ${{ secrets.PROD_APP_NAME }}
           RESOURCE_GROUP: ${{ secrets.PROD_RESOURCE_GROUP }}
         run: |
-          export IMAGE_ID=$(cat image_id.txt);
+          export IMAGE_ID=$(cat ~/image_id/image_id.txt);
           export GREEN_COMMIT=$(echo $GITHUB_SHA | head -c 7)
           cd deploy;
           chmod +x ./blue_green_deploy.sh;
