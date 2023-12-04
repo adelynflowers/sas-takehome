@@ -134,6 +134,7 @@ jobs:
             terraform/*.tfplan
             terraform/*.tf
             terraform/qa.tfvars
+            terraform/*.tfstate
             
 
   # This is "QA approves, shut down QA containers and await PM approval for prod"
