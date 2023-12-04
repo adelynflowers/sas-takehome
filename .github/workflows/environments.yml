@@ -59,7 +59,7 @@ jobs:
         run: |
             az acr login --name adelynflowers;
             docker tag $(./gradlew -q printName):$(./gradlew -q printVersion) adelynflowers.azurecr.io/$(./gradlew -q printName):$(echo $GITHUB_SHA | head -c 7);
-            docker push adelynflowers.azurecr.io/$(./gradlew -q printName):$(./gradlew -q printVersion);
+            docker push adelynflowers.azurecr.io/$(./gradlew -q printName):$(echo $GITHUB_SHA | head -c 7);
             echo adelynflowers.azurecr.io/$(./gradlew -q printName):$(echo $GITHUB_SHA | head -c 7) > image_id.txt;
             cat image_id.txt;
             cp image_id.txt terraform/image_id.txt
