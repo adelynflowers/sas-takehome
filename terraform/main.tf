@@ -22,8 +22,12 @@ data "azurerm_container_app_environment" "example" {
   resource_group_name        = data.azurerm_resource_group.rg.name
 }
 
+locals {
+  clean_revision_label = replace(lower(var.revision_label), ".", "-")
+}
+
 resource "azurerm_container_app" "example" {
-  name                         = join("-", ["app",var.resource_prefix])
+  name                         = join("-", [var.resource_prefix, var.app_name])
   container_app_environment_id = data.azurerm_container_app_environment.example.id
   resource_group_name          = data.azurerm_resource_group.rg.name
   revision_mode                = "Multiple"
@@ -50,7 +54,7 @@ resource "azurerm_container_app" "example" {
 
   template {
     container {
-      name   = join("-", ["container", var.resource_prefix])
+      name   = local.clean_revision_label
       image  = var.image
       cpu    = var.cpu_cores
       memory = var.memory_in_gb
