@@ -123,17 +123,75 @@ jobs:
           terraform plan -var-file qa.tfvars -out "main.tfplan";
           terraform apply "main.tfplan"
 
-      - name: curl instance
-        run: |
-          cd terraform;
-          curl $(echo https://$(terraform output -raw latest_fqdn)/);
+      - name: upload terraform folder as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: qa-terraform
+          path: terraform/
 
-      - name: shutdown resources
+  # This is "QA approves, shut down QA containers and await PM approval for prod"
+  pre-prod:
+    runs-on: ubuntu-latest
+    environment: pre-prod
+    needs: qa
+    steps:
+      - name: authenticate with azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: setup terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: download terraform folder
+        uses: actions/download-artifact@v3
+        with:
+          name: qa_terraform
+          path: .
+
+      - name: destroy QA container
         run: |
           cd terraform;
-          terraform plan -var-file qa.tfvars -destroy -out main.destroy.tfplan;
-          terraform apply "main.destroy.tfplan"
+          terraform plan -destroy -var-file qa.tfvars -out destroy.tfplan;
+          terraform apply destroy.tfplan;
+
+  prod:
+    runs-on: ubuntu-latest
+    environment: prod
+    needs: pre-prod
+    steps:
+      - name: authenticate with azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: checkout repo
+        uses: actions/checkout@v4.1.1
+
+      - name: download image_id artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: image_id
+          path: .
+
+      - name: Deploy image
+        env:
+          APP_NAME: ${{ secrets.PROD_APP_NAME }}
+          RESOURCE_GROUP: ${{ secrets.PROD_RESOURCE_GROUP }}
+        run: |
+          export IMAGE_ID=$(cat image_id.txt);
+          export GREEN_COMMIT=$(echo $GITHUB_SHA | head -c 7)
+          cd deploy;
+          chmod +x ./blue_green_deploy.sh;
+          ./blue_green_deploy.sh
           
+
+
+
           
           
       
